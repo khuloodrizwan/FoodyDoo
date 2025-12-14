@@ -115,7 +115,7 @@ FoodyDoo/
 
 7. **Access the Application**
    - Frontend: `http://localhost:5173`
-   - Admin Panel: `http://localhost:5174` (or your configured port)
+   - Admin Panel: `http://localhost:4000` 
    - Backend API: `http://localhost:4000`
 
 ## 🔑 Environment Variables
@@ -143,7 +143,7 @@ For testing, use these credentials in Razorpay checkout:
 
 ## 📸 Screenshots
 
-*(Add your application screenshots here)*
+![alt text](<Screenshot 2025-12-14 092624.png>) ![alt text](<Screenshot 2025-12-14 092231.png>) ![alt text](<Screenshot 2025-12-14 092251.png>) ![alt text](<Screenshot 2025-12-14 092309.png>) ![alt text](<Screenshot 2025-12-14 092408.png>) ![alt text](<Screenshot 2025-12-14 092436.png>) ![alt text](<Screenshot 2025-12-14 092459.png>) ![alt text](<Screenshot 2025-12-14 092521.png>) ![alt text](<Screenshot 2025-12-14 092534.png>) ![alt text](<Screenshot 2025-12-14 092600.png>) ![alt text](<Screenshot 2025-12-14 092610.png>)
 
 ## 🔐 Security Features
 
@@ -165,7 +165,6 @@ This project is open source and available under the [MIT License](LICENSE).
 
 **Khulood Rizwan**
 - GitHub: [@khuloodrizwan](https://github.com/khuloodrizwan)
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
 
 ## 🙏 Acknowledgments
 
