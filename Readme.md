@@ -1,6 +1,6 @@
 # 🍔 FoodyDoo - Food Delivery Platform
 
-A full-stack MERN food delivery application with integrated Razorpay payment gateway, featuring user authentication, cart management, and a comprehensive admin panel.
+A full-stack MERN food delivery application with integrated Razorpay payment gateway, featuring user authentication,Screen responsive, cart management, and a comprehensive admin panel.
 
 ## 🌟 Features
 
@@ -143,7 +143,7 @@ For testing, use these credentials in Razorpay checkout:
 
 ## 📸 Screenshots
 
-![alt text](<Screenshot 2025-12-14 092624.png>) ![alt text](<Screenshot 2025-12-14 092231.png>) ![alt text](<Screenshot 2025-12-14 092251.png>) ![alt text](<Screenshot 2025-12-14 092309.png>) ![alt text](<Screenshot 2025-12-14 092408.png>) ![alt text](<Screenshot 2025-12-14 092436.png>) ![alt text](<Screenshot 2025-12-14 092459.png>) ![alt text](<Screenshot 2025-12-14 092521.png>) ![alt text](<Screenshot 2025-12-14 092534.png>) ![alt text](<Screenshot 2025-12-14 092600.png>) ![alt text](<Screenshot 2025-12-14 092610.png>)
+![alt text](<Screenshot 2025-12-14 092624.png>) ![alt text](<Screenshot 2025-12-14 092231.png>) ![alt text](<Screenshot 2025-12-14 092251.png>) ![alt text](<Screenshot 2025-12-14 092309.png>) ![alt text](<Screenshot 2025-12-14 092408.png>) ![alt text](<Screenshot 2025-12-14 092436.png>) ![alt text](<Screenshot 2025-12-14 092459.png>) ![alt text](<Screenshot 2025-12-14 092521.png>) ![alt text](<Screenshot 2025-12-14 092534.png>) ![alt text](<Screenshot 2025-12-14 092600.png>) ![alt text](<Screenshot 2025-12-14 092610.png>)![alt text](<Screenshot 2025-12-14 093109.png>) ![alt text](<Screenshot 2025-12-14 093047.png>) ![alt text](<Screenshot 2025-12-14 093056.png>)
 
 ## 🔐 Security Features
 
