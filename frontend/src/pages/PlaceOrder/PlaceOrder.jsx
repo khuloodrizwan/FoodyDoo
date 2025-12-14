@@ -46,11 +46,52 @@ const PlaceOrder = () => {
             items: orderItems,
             amount: getTotalCartAmount() + deliveryCharge,
         }
-        if (payment === "stripe") {
+        if (payment === "razorpay") {
             let response = await axios.post(url + "/api/order/place", orderData, { headers: { token } });
             if (response.data.success) {
-                const { session_url } = response.data;
-                window.location.replace(session_url);
+                const { order, orderId, key_id } = response.data;
+                
+                // Razorpay options
+                const options = {
+                    key: key_id,
+                    amount: order.amount,
+                    currency: order.currency,
+                    name: "Your Company Name",
+                    description: "Food Order Payment",
+                    order_id: order.id,
+                    handler: async function (response) {
+                        try {
+                            // Verify payment
+                            const verifyResponse = await axios.post(url + "/api/order/verify", {
+                                orderId: orderId,
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_signature: response.razorpay_signature
+                            }, { headers: { token } });
+
+                            if (verifyResponse.data.success) {
+                                navigate("/myorders");
+                                toast.success("Payment Successful");
+                                setCartItems({});
+                            } else {
+                                toast.error("Payment verification failed");
+                            }
+                        } catch (error) {
+                            toast.error("Payment verification error");
+                        }
+                    },
+                    prefill: {
+                        name: `${data.firstName} ${data.lastName}`,
+                        email: data.email,
+                        contact: data.phone
+                    },
+                    theme: {
+                        color: "#3399cc"
+                    }
+                };
+
+                const razorpayInstance = new window.Razorpay(options);
+                razorpayInstance.open();
             }
             else {
                 toast.error("Something Went Wrong")
@@ -117,9 +158,9 @@ const PlaceOrder = () => {
                         <img src={payment === "cod" ? assets.checked : assets.un_checked} alt="" />
                         <p>COD ( Cash on delivery )</p>
                     </div>
-                    <div onClick={() => setPayment("stripe")} className="payment-option">
-                        <img src={payment === "stripe" ? assets.checked : assets.un_checked} alt="" />
-                        <p>Stripe ( Credit / Debit )</p>
+                    <div onClick={() => setPayment("razorpay")} className="payment-option">
+                        <img src={payment === "razorpay" ? assets.checked : assets.un_checked} alt="" />
+                        <p>Razorpay ( Credit / Debit )</p>
                     </div>
                 </div>
                 <button className='place-order-submit' type='submit'>{payment==="cod"?"Place Order":"Proceed To Payment"}</button>
