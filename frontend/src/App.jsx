@@ -7,6 +7,7 @@ import Cart from './pages/Cart/Cart'
 import LoginPopup from './components/LoginPopup/LoginPopup'
 import PlaceOrder from './pages/PlaceOrder/PlaceOrder'
 import MyOrders from './pages/MyOrders/MyOrders'
+import AIAssistant from './pages/AIAssistant/AIAssistant'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Verify from './pages/Verify/Verify'
@@ -14,6 +15,7 @@ import Verify from './pages/Verify/Verify'
 const App = () => {
 
   const [showLogin,setShowLogin] = useState(false);
+  const url = "http://localhost:4000";
 
   return (
     <>
@@ -27,6 +29,7 @@ const App = () => {
           <Route path='/order' element={<PlaceOrder />}/>
           <Route path='/myorders' element={<MyOrders />}/>
           <Route path='/verify' element={<Verify />}/>
+          <Route path='/ai-assistant' element={<AIAssistant url={url} token={localStorage.getItem("token")} />}/>
         </Routes>
       </div>
       <Footer />
