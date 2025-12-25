@@ -8,6 +8,7 @@ import LoginPopup from './components/LoginPopup/LoginPopup'
 import PlaceOrder from './pages/PlaceOrder/PlaceOrder'
 import MyOrders from './pages/MyOrders/MyOrders'
 import AIAssistant from './pages/AIAssistant/AIAssistant'
+import Favorites from './pages/Favorites/Favorites'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Verify from './pages/Verify/Verify'
@@ -30,6 +31,7 @@ const App = () => {
           <Route path='/myorders' element={<MyOrders />}/>
           <Route path='/verify' element={<Verify />}/>
           <Route path='/ai-assistant' element={<AIAssistant url={url} token={localStorage.getItem("token")} />}/>
+          <Route path='/favorites' element={<Favorites />}/>
         </Routes>
       </div>
       <Footer />

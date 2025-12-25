@@ -12,11 +12,8 @@ const AIChat = ({ url, token }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [recommendedFoods, setRecommendedFoods] = useState([]);
   const [favorites, setFavorites] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [showSearch, setShowSearch] = useState(false);
   const messagesEndRef = useRef(null);
-  const { addToCart, cartItems } = useContext(StoreContext);
+  const { addToCart } = useContext(StoreContext);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -136,7 +133,6 @@ const AIChat = ({ url, token }) => {
     setInput('');
     setLoading(true);
 
-    // Save user message
     saveChatMessage('user', messageText);
 
     try {
@@ -153,10 +149,8 @@ const AIChat = ({ url, token }) => {
         const aiMessage = { role: 'assistant', content: response.data.response };
         setMessages(prev => [...prev, aiMessage]);
         
-        // Save AI response
         saveChatMessage('assistant', response.data.response);
         
-        // Set recommended foods if available
         if (response.data.recommendedFoods && response.data.recommendedFoods.length > 0) {
           setRecommendedFoods(response.data.recommendedFoods);
         }
@@ -173,26 +167,9 @@ const AIChat = ({ url, token }) => {
     }
   };
 
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) return;
-
-    setShowSearch(true);
-    try {
-      const response = await axios.post(`${url}/api/ai/search`, {
-        query: searchQuery
-      });
-
-      if (response.data.success) {
-        setSearchResults(response.data.results);
-      }
-    } catch (error) {
-      console.error("Search error:", error);
-    }
-  };
-
-  const handleAddToCart = (food) => {
-    addToCart(food._id || food.id);
-    toast.success(`${food.name} added to cart!`);
+  const handleAddToCart = (itemId) => {
+    addToCart(itemId);
+    toast.success('Added to cart!');
   };
 
   const handleAddToFavorite = async (food) => {
@@ -204,7 +181,6 @@ const AIChat = ({ url, token }) => {
     const isFavorited = favorites.some(fav => fav.foodId === (food._id || food.id));
 
     if (isFavorited) {
-      // Remove from favorites
       try {
         const response = await axios.post(
           `${url}/api/favorite/remove`,
@@ -221,7 +197,6 @@ const AIChat = ({ url, token }) => {
         toast.error("Failed to remove favorite");
       }
     } else {
-      // Add to favorites
       try {
         const response = await axios.post(
           `${url}/api/favorite/add`,
@@ -259,41 +234,12 @@ const AIChat = ({ url, token }) => {
 
   return (
     <div className="ai-chat-container">
-      {/* Search Bar */}
-      <div className="chat-search-bar">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="🔍 Search menu while chatting..."
-          onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-        />
-        <button onClick={handleSearch}>Search</button>
-        {token && (
+      {/* Header with Clear History Button */}
+      {token && (
+        <div className="chat-header">
           <button onClick={clearHistory} className="clear-history-btn">
             🗑️ Clear History
           </button>
-        )}
-      </div>
-
-      {/* Search Results */}
-      {showSearch && searchResults.length > 0 && (
-        <div className="search-results-section">
-          <div className="search-results-header">
-            <h3>Search Results ({searchResults.length})</h3>
-            <button onClick={() => setShowSearch(false)}>✕</button>
-          </div>
-          <div className="search-results-grid">
-            {searchResults.map((food) => (
-              <FoodCard
-                key={food._id}
-                food={food}
-                onAddToCart={handleAddToCart}
-                onAddToFavorite={handleAddToFavorite}
-                isFavorited={favorites.some(fav => fav.foodId === food._id)}
-              />
-            ))}
-          </div>
         </div>
       )}
 
@@ -325,6 +271,7 @@ const AIChat = ({ url, token }) => {
                 <FoodCard
                   key={food.id}
                   food={food}
+                  url={url}
                   onAddToCart={handleAddToCart}
                   onAddToFavorite={handleAddToFavorite}
                   isFavorited={favorites.some(fav => fav.foodId === food.id)}

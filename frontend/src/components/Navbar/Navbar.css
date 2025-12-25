@@ -147,3 +147,37 @@ position: relative;
         display: none;
     }
 }
+/* Favorites Heart Icon */
+.navbar-favorites-icon {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.heart-icon {
+  font-size: 24px;
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+
+.navbar-favorites-icon:hover .heart-icon {
+  transform: scale(1.2);
+  animation: heartBeat 0.5s ease;
+}
+
+@keyframes heartBeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.3);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  75% {
+    transform: scale(1.25);
+  }
+}

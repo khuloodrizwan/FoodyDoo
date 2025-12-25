@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import './FoodCard.css';
-import { assets } from '../../assets/assets';
 
-const FoodCard = ({ food, onAddToCart, onAddToFavorite, isFavorited }) => {
+const FoodCard = ({ food, url, onAddToCart, onAddToFavorite, isFavorited }) => {
   const [showNutrition, setShowNutrition] = useState(false);
 
   return (
     <div className="food-card">
       <div className="food-card-image">
         <img 
-          src={food.image ? `http://localhost:4000/images/${food.image}` : assets.food_1} 
+          src={food.image ? `${url}/images/${food.image}` : `${url}/images/food_1.png`} 
           alt={food.name} 
         />
         <button 
@@ -63,7 +62,7 @@ const FoodCard = ({ food, onAddToCart, onAddToFavorite, isFavorited }) => {
         
         <button 
           className="add-to-cart-btn"
-          onClick={() => onAddToCart(food)}
+          onClick={() => onAddToCart(food._id || food.id)}
         >
           Add to Cart
         </button>

@@ -27,7 +27,9 @@ const Navbar = ({ setShowLogin }) => {
         <Link to="/ai-assistant" onClick={() => setMenu("ai-assistant")} className={`${menu === "ai-assistant" ? "active" : ""}`}>AI Assistant</Link>
       </ul>
       <div className="navbar-right">
-        <img src={assets.search_icon} alt="" />
+        <Link to='/favorites' className='navbar-favorites-icon' onClick={() => setMenu("favorites")}>
+          <span className="heart-icon">❤️</span>
+        </Link>
         <Link to='/cart' className='navbar-search-icon'>
           <img src={assets.basket_icon} alt="" />
           <div className={getTotalCartAmount() > 0 ? "dot" : ""}></div>
