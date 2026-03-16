@@ -12,6 +12,7 @@ import Favorites from './pages/Favorites/Favorites'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Verify from './pages/Verify/Verify'
+import SeasonalBanner from './components/SeasonalBanner/SeasonalBanner'
 
 const App = () => {
 
@@ -24,14 +25,16 @@ const App = () => {
     {showLogin?<LoginPopup setShowLogin={setShowLogin}/>:<></>}
       <div className='app'>
         <Navbar setShowLogin={setShowLogin}/>
+        <SeasonalBanner url={url}/>
         <Routes>
-          <Route path='/' element={<Home />}/>
+          <Route path='/' element={<Home url={url}/>}/>
           <Route path='/cart' element={<Cart />}/>
           <Route path='/order' element={<PlaceOrder />}/>
           <Route path='/myorders' element={<MyOrders />}/>
           <Route path='/verify' element={<Verify />}/>
           <Route path='/ai-assistant' element={<AIAssistant url={url} token={localStorage.getItem("token")} />}/>
           <Route path='/favorites' element={<Favorites />}/>
+          
         </Routes>
       </div>
       <Footer />

@@ -9,6 +9,8 @@ import axios from 'axios';
 const PlaceOrder = () => {
 
     const [payment, setPayment] = useState("cod")
+    const [couponCode, setCouponCode] = useState("")
+    const [discount, setDiscount] = useState(0)
     const [data, setData] = useState({
         firstName: "",
         lastName: "",
@@ -21,7 +23,7 @@ const PlaceOrder = () => {
         phone: ""
     })
 
-    const { getTotalCartAmount, token, food_list, cartItems, url, setCartItems,currency,deliveryCharge } = useContext(StoreContext);
+    const { getTotalCartAmount, token, food_list, cartItems, url, setCartItems, currency, deliveryCharge } = useContext(StoreContext);
 
     const navigate = useNavigate();
 
@@ -29,6 +31,16 @@ const PlaceOrder = () => {
         const name = event.target.name
         const value = event.target.value
         setData(data => ({ ...data, [name]: value }))
+    }
+
+    const applyCoupon = async () => {
+        const response = await axios.post(url + "/api/coupon/apply", { code: couponCode })
+        if (response.data.success) {
+            setDiscount(response.data.discount)
+            toast.success("Coupon Applied!")
+        } else {
+            toast.error("Invalid Coupon")
+        }
     }
 
     const placeOrder = async (e) => {
@@ -44,14 +56,12 @@ const PlaceOrder = () => {
         let orderData = {
             address: data,
             items: orderItems,
-            amount: getTotalCartAmount() + deliveryCharge,
+            amount: getTotalCartAmount() + deliveryCharge - discount,
         }
         if (payment === "razorpay") {
             let response = await axios.post(url + "/api/order/place", orderData, { headers: { token } });
             if (response.data.success) {
                 const { order, orderId, key_id } = response.data;
-                
-                // Razorpay options
                 const options = {
                     key: key_id,
                     amount: order.amount,
@@ -61,7 +71,6 @@ const PlaceOrder = () => {
                     order_id: order.id,
                     handler: async function (response) {
                         try {
-                            // Verify payment
                             const verifyResponse = await axios.post(url + "/api/order/verify", {
                                 orderId: orderId,
                                 razorpay_order_id: response.razorpay_order_id,
@@ -89,26 +98,21 @@ const PlaceOrder = () => {
                         color: "#3399cc"
                     }
                 };
-
                 const razorpayInstance = new window.Razorpay(options);
                 razorpayInstance.open();
-            }
-            else {
+            } else {
                 toast.error("Something Went Wrong")
             }
-        }
-        else{
+        } else {
             let response = await axios.post(url + "/api/order/placecod", orderData, { headers: { token } });
             if (response.data.success) {
                 navigate("/myorders")
                 toast.success(response.data.message)
                 setCartItems({});
-            }
-            else {
+            } else {
                 toast.error("Something Went Wrong")
             }
         }
-
     }
 
     useEffect(() => {
@@ -149,7 +153,21 @@ const PlaceOrder = () => {
                         <hr />
                         <div className="cart-total-details"><p>Delivery Fee</p><p>{currency}{getTotalCartAmount() === 0 ? 0 : deliveryCharge}</p></div>
                         <hr />
-                        <div className="cart-total-details"><b>Total</b><b>{currency}{getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + deliveryCharge}</b></div>
+                        <div className="cart-total-details"><p>Discount</p><p>-{currency}{discount}</p></div>
+                        <hr />
+                        <div className="cart-total-details"><b>Total</b><b>{currency}{getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + deliveryCharge - discount}</b></div>
+                    </div>
+                </div>
+                <div className="coupon">
+                    <h2>Have a Coupon?</h2>
+                    <div className="coupon-input">
+                        <input
+                            type="text"
+                            placeholder='Enter coupon code'
+                            value={couponCode}
+                            onChange={(e) => setCouponCode(e.target.value)}
+                        />
+                        <button type='button' onClick={applyCoupon}>Apply</button>
                     </div>
                 </div>
                 <div className="payment">
@@ -163,7 +181,7 @@ const PlaceOrder = () => {
                         <p>Razorpay ( Credit / Debit )</p>
                     </div>
                 </div>
-                <button className='place-order-submit' type='submit'>{payment==="cod"?"Place Order":"Proceed To Payment"}</button>
+                <button className='place-order-submit' type='submit'>{payment === "cod" ? "Place Order" : "Proceed To Payment"}</button>
             </div>
         </form>
     )

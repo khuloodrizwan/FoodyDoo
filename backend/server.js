@@ -9,6 +9,8 @@ import orderRouter from "./routes/orderRoute.js"
 import aiRouter from "./routes/aiRoute.js"
 import chatRouter from "./routes/chatRoute.js"
 import favoriteRouter from "./routes/favoriteRoute.js"
+import analyticsRouter from "./routes/analyticsRoute.js"
+import couponRouter from "./routes/couponRoute.js"
 
 // app config
 const app = express()
@@ -31,6 +33,8 @@ app.use("/api/order",orderRouter)
 app.use("/api/ai", aiRouter)
 app.use("/api/chat", chatRouter)
 app.use("/api/favorite", favoriteRouter)
+app.use("/api/analytics", analyticsRouter)
+app.use("/api/coupon", couponRouter)
 
 app.get("/", (req, res) => {
     res.send("API Working")
