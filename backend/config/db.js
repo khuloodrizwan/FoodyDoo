@@ -1,8 +1,10 @@
 import mongoose from "mongoose";
 
 export const connectDB = async () => {
-    await mongoose.connect(process.env.MONGODB_URI).then(() => console.log("DB Connected"));
+    try {
+        await mongoose.connect(process.env.MONGODB_URI);
+        console.log("DB Connected");
+    } catch (error) {
+        console.log("DB Connection Error:", error.message);
+    }
 }
-
-// MongoDB connection string is now stored in .env file for security
-// Do not use '@' symbol in your database user's password else it will show an error.
