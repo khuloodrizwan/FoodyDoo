@@ -1,5 +1,6 @@
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js"
+import couponModel from "../models/couponModel.js"
 import Razorpay from "razorpay";
 import crypto from "crypto";
 
@@ -9,14 +10,12 @@ const razorpay = new Razorpay({
     key_secret: process.env.RAZORPAY_KEY_SECRET
 });
 
-//config variables
 const currency = "INR";
 const deliveryCharge = 20;
 const frontend_URL = 'http://localhost:5173';
 
 // Placing User Order for Frontend using Razorpay
 const placeOrder = async (req, res) => {
-
     try {
         const newOrder = new orderModel({
             userId: req.body.userId,
@@ -25,19 +24,27 @@ const placeOrder = async (req, res) => {
             address: req.body.address,
         })
         await newOrder.save();
+
+        // Coupon used mark karo
+        if (req.body.couponCode) {
+            await couponModel.findOneAndUpdate(
+                { code: req.body.couponCode },
+                { $push: { usedBy: req.body.userId } }
+            )
+        }
+
         await userModel.findByIdAndUpdate(req.body.userId, { cartData: {} });
 
-        // Create Razorpay order
         const options = {
-            amount: req.body.amount * 100, // amount in smallest currency unit (paise)
+            amount: req.body.amount * 100,
             currency: currency,
             receipt: newOrder._id.toString(),
         };
 
         const razorpayOrder = await razorpay.orders.create(options);
 
-        res.json({ 
-            success: true, 
+        res.json({
+            success: true,
             order: razorpayOrder,
             orderId: newOrder._id,
             key_id: process.env.RAZORPAY_KEY_ID
@@ -51,7 +58,6 @@ const placeOrder = async (req, res) => {
 
 // Placing User Order for Frontend using COD
 const placeOrderCod = async (req, res) => {
-
     try {
         const newOrder = new orderModel({
             userId: req.body.userId,
@@ -61,6 +67,15 @@ const placeOrderCod = async (req, res) => {
             payment: true,
         })
         await newOrder.save();
+
+        // Coupon used mark karo
+        if (req.body.couponCode) {
+            await couponModel.findOneAndUpdate(
+                { code: req.body.couponCode },
+                { $push: { usedBy: req.body.userId } }
+            )
+        }
+
         await userModel.findByIdAndUpdate(req.body.userId, { cartData: {} });
 
         res.json({ success: true, message: "Order Placed" });
@@ -94,21 +109,17 @@ const userOrders = async (req, res) => {
 }
 
 const updateStatus = async (req, res) => {
-    console.log(req.body);
     try {
         await orderModel.findByIdAndUpdate(req.body.orderId, { status: req.body.status });
         res.json({ success: true, message: "Status Updated" })
     } catch (error) {
         res.json({ success: false, message: "Error" })
     }
-
 }
 
 const verifyOrder = async (req, res) => {
     const { orderId, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-    
     try {
-        // Verify payment signature
         const sign = razorpay_order_id + "|" + razorpay_payment_id;
         const expectedSign = crypto
             .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
@@ -118,8 +129,7 @@ const verifyOrder = async (req, res) => {
         if (razorpay_signature === expectedSign) {
             await orderModel.findByIdAndUpdate(orderId, { payment: true });
             res.json({ success: true, message: "Paid" })
-        }
-        else {
+        } else {
             await orderModel.findByIdAndDelete(orderId)
             res.json({ success: false, message: "Not Paid" })
         }
@@ -127,7 +137,6 @@ const verifyOrder = async (req, res) => {
         console.log(error);
         res.json({ success: false, message: "Not Verified" })
     }
-
 }
 
 export { placeOrder, listOrders, userOrders, updateStatus, verifyOrder, placeOrderCod }

@@ -36,21 +36,27 @@ const deleteCoupon = async (req, res) => {
 const applyCoupon = async (req, res) => {
     try {
         const coupon = await couponModel.findOne({ code: req.body.code, isActive: true });
-        
+
         if (!coupon) {
             return res.json({ success: false, message: "Invalid Coupon" })
         }
         if (coupon.expiryDate < Date.now()) {
             return res.json({ success: false, message: "Coupon Expired" })
         }
-        
-        // ⭐ Yeh naya check — order amount coupon se zyada hona chahiye
+
+        // Order amount check
         const orderAmount = req.body.orderAmount;
         if (orderAmount <= coupon.discount) {
-            return res.json({ 
-                success: false, 
-                message:`Minimum order amount must be more than ₹${coupon.discount} to apply this coupon!`
+            return res.json({
+                success: false,
+                message: `Minimum order amount must be more than ₹${coupon.discount} to apply this coupon!`
             })
+        }
+
+        // Check — yeh user pehle use kar chuka hai?
+        const userId = req.body.userId;
+        if (coupon.usedBy.includes(userId)) {
+            return res.json({ success: false, message: "You have already used this coupon!" })
         }
 
         res.json({ success: true, discount: coupon.discount })

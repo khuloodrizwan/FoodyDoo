@@ -21,7 +21,6 @@ const PlaceOrder = () => {
     const { getTotalCartAmount, token, food_list, cartItems, url, setCartItems, currency, deliveryCharge } = useContext(StoreContext);
     const navigate = useNavigate();
 
-    // Available coupons fetch karo
     const fetchCoupons = async () => {
         try {
             const response = await axios.get(`${url}/api/coupon/list`)
@@ -43,25 +42,24 @@ const PlaceOrder = () => {
         setData(data => ({ ...data, [name]: value }))
     }
 
-    // Coupon apply karo — chip click se ya manually
-   const applyCoupon = async (code) => {
-    const codeToApply = code || couponCode
-    if (!codeToApply) return
-    const response = await axios.post(url + "/api/coupon/apply", { 
-        code: codeToApply,
-        orderAmount: getTotalCartAmount()  // ⭐ yeh add karo
-    })
-    if (response.data.success) {
-        setDiscount(response.data.discount)
-        setAppliedCoupon(codeToApply)
-        setCouponCode(codeToApply)
-        toast.success("Coupon Applied!")
-    } else {
-        toast.error(response.data.message)  // ⭐ message bhi update karo
+    const applyCoupon = async (code) => {
+        const codeToApply = code || couponCode
+        if (!codeToApply) return
+        const response = await axios.post(url + "/api/coupon/apply", {
+            code: codeToApply,
+            orderAmount: getTotalCartAmount(),
+            userId: localStorage.getItem("userId")
+        })
+        if (response.data.success) {
+            setDiscount(response.data.discount)
+            setAppliedCoupon(codeToApply)
+            setCouponCode(codeToApply)
+            toast.success("Coupon Applied!")
+        } else {
+            toast.error(response.data.message)
+        }
     }
-}
 
-    // Coupon remove karo
     const removeCoupon = () => {
         setDiscount(0)
         setAppliedCoupon("")
@@ -72,17 +70,18 @@ const PlaceOrder = () => {
     const placeOrder = async (e) => {
         e.preventDefault()
         let orderItems = [];
-        food_list.map(((item) => {
+        food_list.map((item) => {
             if (cartItems[item._id] > 0) {
                 let itemInfo = item;
                 itemInfo["quantity"] = cartItems[item._id];
                 orderItems.push(itemInfo)
             }
-        }))
+        })
         let orderData = {
             address: data,
             items: orderItems,
             amount: getTotalCartAmount() + deliveryCharge - discount,
+            couponCode: appliedCoupon
         }
         if (payment === "razorpay") {
             let response = await axios.post(url + "/api/order/place", orderData, { headers: { token } });
