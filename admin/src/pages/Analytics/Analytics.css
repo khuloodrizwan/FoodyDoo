@@ -1,0 +1,122 @@
+.analytics {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.analytics-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.analytics-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.analytics-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.analytics-card h3 {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.analytics-card p {
+    font-size: 24px;
+    font-weight: 700;
+    color: tomato;
+}
+
+.profit-section {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.profit-input {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.profit-input input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    width: 300px;
+}
+
+.profit-input button {
+    padding: 10px 20px;
+    background-color: tomato;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.profit-result {
+    margin-top: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.profit-result.profit {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.profit-result.loss {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.monthly-chart {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 15px;
+    height: 200px;
+    padding: 10px 0;
+}
+
+.chart-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.bar {
+    width: 30px;
+    background-color: tomato;
+    border-radius: 4px 4px 0 0;
+    min-height: 5px;
+}
+
+.chart-bar p {
+    font-size: 11px;
+    color: #555;
+}

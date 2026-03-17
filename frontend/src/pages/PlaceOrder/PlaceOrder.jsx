@@ -11,21 +11,31 @@ const PlaceOrder = () => {
     const [payment, setPayment] = useState("cod")
     const [couponCode, setCouponCode] = useState("")
     const [discount, setDiscount] = useState(0)
+    const [coupons, setCoupons] = useState([])
+    const [appliedCoupon, setAppliedCoupon] = useState("")
     const [data, setData] = useState({
-        firstName: "",
-        lastName: "",
-        email: "",
-        street: "",
-        city: "",
-        state: "",
-        zipcode: "",
-        country: "",
-        phone: ""
+        firstName: "", lastName: "", email: "", street: "",
+        city: "", state: "", zipcode: "", country: "", phone: ""
     })
 
     const { getTotalCartAmount, token, food_list, cartItems, url, setCartItems, currency, deliveryCharge } = useContext(StoreContext);
-
     const navigate = useNavigate();
+
+    // Available coupons fetch karo
+    const fetchCoupons = async () => {
+        try {
+            const response = await axios.get(`${url}/api/coupon/list`)
+            if (response.data.success) {
+                const today = new Date()
+                const activeCoupons = response.data.data.filter(coupon =>
+                    coupon.isActive && new Date(coupon.expiryDate) > today
+                )
+                setCoupons(activeCoupons)
+            }
+        } catch (error) {
+            console.log("Coupon fetch error", error)
+        }
+    }
 
     const onChangeHandler = (event) => {
         const name = event.target.name
@@ -33,14 +43,30 @@ const PlaceOrder = () => {
         setData(data => ({ ...data, [name]: value }))
     }
 
-    const applyCoupon = async () => {
-        const response = await axios.post(url + "/api/coupon/apply", { code: couponCode })
-        if (response.data.success) {
-            setDiscount(response.data.discount)
-            toast.success("Coupon Applied!")
-        } else {
-            toast.error("Invalid Coupon")
-        }
+    // Coupon apply karo — chip click se ya manually
+   const applyCoupon = async (code) => {
+    const codeToApply = code || couponCode
+    if (!codeToApply) return
+    const response = await axios.post(url + "/api/coupon/apply", { 
+        code: codeToApply,
+        orderAmount: getTotalCartAmount()  // ⭐ yeh add karo
+    })
+    if (response.data.success) {
+        setDiscount(response.data.discount)
+        setAppliedCoupon(codeToApply)
+        setCouponCode(codeToApply)
+        toast.success("Coupon Applied!")
+    } else {
+        toast.error(response.data.message)  // ⭐ message bhi update karo
+    }
+}
+
+    // Coupon remove karo
+    const removeCoupon = () => {
+        setDiscount(0)
+        setAppliedCoupon("")
+        setCouponCode("")
+        toast.info("Coupon Removed")
     }
 
     const placeOrder = async (e) => {
@@ -77,7 +103,6 @@ const PlaceOrder = () => {
                                 razorpay_payment_id: response.razorpay_payment_id,
                                 razorpay_signature: response.razorpay_signature
                             }, { headers: { token } });
-
                             if (verifyResponse.data.success) {
                                 navigate("/myorders");
                                 toast.success("Payment Successful");
@@ -94,9 +119,7 @@ const PlaceOrder = () => {
                         email: data.email,
                         contact: data.phone
                     },
-                    theme: {
-                        color: "#3399cc"
-                    }
+                    theme: { color: "#3399cc" }
                 };
                 const razorpayInstance = new window.Razorpay(options);
                 razorpayInstance.open();
@@ -119,10 +142,10 @@ const PlaceOrder = () => {
         if (!token) {
             toast.error("to place an order sign in first")
             navigate('/cart')
-        }
-        else if (getTotalCartAmount() === 0) {
+        } else if (getTotalCartAmount() === 0) {
             navigate('/cart')
         }
+        fetchCoupons()
     }, [token])
 
     return (
@@ -145,7 +168,30 @@ const PlaceOrder = () => {
                 </div>
                 <input type="text" name='phone' onChange={onChangeHandler} value={data.phone} placeholder='Phone' required />
             </div>
+
             <div className="place-order-right">
+
+                {/* Available Coupon Chips */}
+                {coupons.length > 0 && (
+                    <div className="available-coupons">
+                        <p className="coupons-label">🏷️ Available Coupons:</p>
+                        <div className="coupons-strip">
+                            {coupons.map((coupon, index) => (
+                                <div
+                                    key={index}
+                                    className={`coupon-chip ${appliedCoupon === coupon.code ? 'chip-active' : ''}`}
+                                    onClick={() => appliedCoupon === coupon.code ? removeCoupon() : applyCoupon(coupon.code)}
+                                >
+                                    <span className="chip-code">{coupon.code}</span>
+                                    <span className="chip-discount">₹{coupon.discount} OFF</span>
+                                    {appliedCoupon === coupon.code && <span className="chip-check">✓</span>}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Cart Totals */}
                 <div className="cart-total">
                     <h2>Cart Totals</h2>
                     <div>
@@ -158,6 +204,8 @@ const PlaceOrder = () => {
                         <div className="cart-total-details"><b>Total</b><b>{currency}{getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + deliveryCharge - discount}</b></div>
                     </div>
                 </div>
+
+                {/* Manual Coupon Input */}
                 <div className="coupon">
                     <h2>Have a Coupon?</h2>
                     <div className="coupon-input">
@@ -167,9 +215,11 @@ const PlaceOrder = () => {
                             value={couponCode}
                             onChange={(e) => setCouponCode(e.target.value)}
                         />
-                        <button type='button' onClick={applyCoupon}>Apply</button>
+                        <button type='button' onClick={() => applyCoupon()}>Apply</button>
                     </div>
                 </div>
+
+                {/* Payment */}
                 <div className="payment">
                     <h2>Payment Method</h2>
                     <div onClick={() => setPayment("cod")} className="payment-option">

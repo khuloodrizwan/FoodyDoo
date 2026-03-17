@@ -68,3 +68,100 @@
         flex-direction: column;
     }
 }
+.available-coupons {
+    margin-bottom: 20px;
+    background-color: #fff8f6;
+    border: 1px dashed tomato;
+    border-radius: 8px;
+    padding: 12px 15px;
+}
+
+.coupons-label {
+    font-weight: 600;
+    color: tomato;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.coupons-strip {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+.coupon-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: white;
+    border: 1px solid tomato;
+    border-radius: 20px;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.coupon-chip:hover {
+    background-color: #ffe7de;
+}
+
+.chip-active {
+    background-color: tomato !important;
+}
+
+.chip-active .chip-code,
+.chip-active .chip-discount,
+.chip-active .chip-check {
+    color: white !important;
+}
+
+.chip-code {
+    font-weight: 700;
+    color: tomato;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+.chip-discount {
+    font-size: 12px;
+    color: #555;
+}
+
+.chip-check {
+    font-size: 13px;
+    color: white;
+    font-weight: 700;
+}
+
+.coupon {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.coupon h2 {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.coupon-input {
+    display: flex;
+    gap: 10px;
+}
+
+.coupon-input input {
+    padding: 10px;
+    border: 1px solid #C5C5C5;
+    border-radius: 4px;
+    outline-color: tomato;
+    width: 100%;
+}
+
+.coupon-input button {
+    padding: 10px 20px;
+    background-color: tomato;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
