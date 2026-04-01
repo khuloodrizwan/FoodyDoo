@@ -129,7 +129,7 @@ const Favorites = () => {
                   <p className="favorite-description">{fav.foodDetails.description}</p>
                   <p className="favorite-recommendation">{fav.recommendation}</p>
                   <div className="favorite-card-footer">
-                    <span className="favorite-price">${fav.foodDetails.price}</span> 
+                    <span className="favorite-price">₹{fav.foodDetails.price}</span> 
                     <button 
                       className="add-to-cart-btn"
                       onClick={() => handleAddToCart(fav.foodId)}
