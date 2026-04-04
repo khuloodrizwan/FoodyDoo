@@ -115,8 +115,8 @@ FoodyDoo/
 
 7. **Access the Application**
    - Frontend: `http://localhost:5173`
-   - Admin Panel: `http://localhost:4000` 
-   - Backend API: `http://localhost:4000`
+   - Admin Panel: `http://localhost:4001` 
+   - Backend API: `http://localhost:4001`
 
 ## 🔑 Environment Variables
 
