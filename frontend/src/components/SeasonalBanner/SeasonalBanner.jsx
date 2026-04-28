@@ -29,7 +29,7 @@ const SeasonalBanner = ({ url }) => {
     // Season detect karo automatically
     const getSeason = () => {
         const month = new Date().getMonth()
-        if (month === 2 || month === 3) return { label: "🌙 Ramadan Special", bg: "#6a0dad" }
+        if (month === 2 || month === 3) return { label: "🌙 Pocket Special", bg: "#6a0dad" }
         if (month >= 4 && month <= 6) return { label: "☀️ Summer Offer", bg: "#ff6b35" }
         if (month >= 5 && month <= 7) return { label: "🥭 Mango Season", bg: "#f7b731" }
         if (month >= 10 && month <= 11) return { label: "❄️ Winter Special", bg: "#2980b9" }
